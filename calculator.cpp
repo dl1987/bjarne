@@ -50,6 +50,37 @@ double primary()
 }
 
 /*
+ * Factorial:
+ * 	Primary
+ * 	Primary!
+ */
+
+double factorial(int d)
+{
+	switch(d)
+	{
+	case 1:
+		return 1;
+	default:
+		return d * factorial(d-1);
+	}
+}
+
+double factorial_term()
+{
+	double left = primary();
+	Token t = ts.get();
+	if(t.kind == '!')
+	{
+		return factorial(left);
+	}
+	else
+	{
+		ts.putback(t);
+		return left;
+	}
+}
+/*
  * Term:
  * 	Primary
  * 	Term * Primary
@@ -59,19 +90,19 @@ double primary()
  */
 double term()
 {
-	double left = primary();
+	double left = factorial_term();
 	Token t = ts.get();
 	while(true)
 	{
 		switch(t.kind)
 		{
 		case '*':
-			left *= primary();
+			left *= factorial_term();
 			t = ts.get();
 			break;
 		case '/':
 		{
-			double d = primary();
+			double d = factorial_term();
 			if(d==0) error("Dzielenie przez 0");
 			left /= d;
 			t = ts.get();
