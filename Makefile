@@ -1,18 +1,28 @@
+# $@ : $< .....//first
+# $@ : $^      //all
+
 TARGET		:= calculator
 
-SRC			:= $(wildcard *.cpp)
+INCDIR		:= include
+SRCDIR		:= src
+BUILDDIR	:= build
 
-OBJ			:= $(SRC:.cpp=.o)
+SRCEXT		:= cpp
 
+SRC		:= $(shell find $(SRCDIR) -name *.$(SRCEXT))
 
-CPPFLAGS	:= -I../include
+OBJ		:= $(patsubst $(SRCDIR)/%.$(SRCEXT), $(BUILDDIR)/%.o, $(SRC))
+
+CPPFLAGS	:= -c -Wall -I$(INCDIR)
+
+all: $(TARGET)
 
 $(TARGET): $(OBJ)
 	$(CXX) $^ -o $@
-		
-all: $(TARGET)
+	
+$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
+	$(CXX) $(CPPFLAGS) $< -o $@
 
 clean:
 	$(RM) $(TARGET) $(OBJ)
-
 
