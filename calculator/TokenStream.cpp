@@ -17,7 +17,7 @@ Token TokenStream::get()
         case '=': case 'x':
         case '(': case ')':
         case '{': case '}':
-        case '+': case '-': case '*': case '/':
+        case '+': case '-': case '*': case '/': case '!':
             return Token(ch);
         case '.':
         case '0': case '1': case '2': case '3': case '4':

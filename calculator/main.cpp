@@ -33,21 +33,47 @@ double primary()
     }
 }
 
-double term()
+int strength(int v)
+{
+    if(v==0) return 1;
+    if(v==1) return 1;
+    return v*strength(v-1);
+}
+
+double strength()
 {
     auto left = primary();
+    auto token = ts.get();
+    switch(token.kind)
+    {
+        case '!':
+        {
+            int int_left = left;
+            if(int_left != left) error("not integer for strength");
+            return strength(left);
+        }
+        default:
+            ts.putback(token);
+            return left;
+            break;
+    }
+}
+
+double term()
+{
+    auto left = strength();
     Token t = ts.get();
     while(true)
     {
         switch(t.kind)
         {
             case '*':
-                left *= primary();
+                left *= strength();
                 t = ts.get();
                 break;
             case '/':
                 {
-                    auto prim = primary();
+                    auto prim = strength();
                     if(prim == 0) error("divide by 0");
                     left /= prim;
                     t = ts.get();
